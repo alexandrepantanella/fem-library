@@ -1,6 +1,25 @@
 package lib
 
-type Node struct {
+type Node1 struct {
+	Idx int
+	X   float64 //X coordinate
+	Ux  int     //X Constrain (Translation)
+	Fx  float64 //Nodal Force applied
+}
+
+type Node2 struct {
+	Idx int
+	X   float64 //X coordinate
+	Y   float64 //Y coordinate
+	Ux  int     //X Constrain (Translation)
+	Uy  int     //Y Constrain (Translation)
+	Rz  int     //Rz Constrain  (Rotation)
+	Fx  float64 //Nodal Force applied
+	Fy  float64 //Nodal Force applied
+	Mz  float64 //Nodal Moment applied
+}
+
+type Node3 struct {
 	Idx int
 	X   float64 //X coordinate
 	Y   float64 //Y coordinate
