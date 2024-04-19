@@ -5,9 +5,9 @@ import (
 
 	"gonum.org/v1/gonum/mat"
 
-	"alexcloud.it/dsm/material"
-	"alexcloud.it/dsm/node"
-	"alexcloud.it/dsm/section"
+	"github.com/fem-library/material"
+	"github.com/fem-library/node"
+	"github.com/fem-library/section"
 )
 
 type Beam2D struct {

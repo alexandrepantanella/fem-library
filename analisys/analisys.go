@@ -1,8 +1,8 @@
 package analisys
 
 import (
-	"alexcloud.it/dsm/element"
-	"alexcloud.it/dsm/node"
+	"github.com/fem-library/element"
+	"github.com/fem-library/node"
 )
 
 type Analisys1D struct {

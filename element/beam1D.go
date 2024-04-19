@@ -3,9 +3,9 @@ package element
 import (
 	"math"
 
-	"alexcloud.it/dsm/material"
-	"alexcloud.it/dsm/node"
-	"alexcloud.it/dsm/section"
+	"github.com/fem-library/material"
+	"github.com/fem-library/node"
+	"github.com/fem-library/section"
 	"gonum.org/v1/gonum/mat"
 )
 

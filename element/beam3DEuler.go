@@ -5,10 +5,10 @@ import (
 
 	"gonum.org/v1/gonum/mat"
 
-	"alexcloud.it/dsm/material"
-	"alexcloud.it/dsm/node"
-	"alexcloud.it/dsm/section"
-	"alexcloud.it/dsm/transform"
+	"github.com/fem-library/material"
+	"github.com/fem-library/node"
+	"github.com/fem-library/section"
+	"github.com/fem-library/transform"
 )
 
 type Beam3DEuler struct {

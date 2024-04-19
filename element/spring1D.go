@@ -1,7 +1,7 @@
 package element
 
 import (
-	"alexcloud.it/dsm/node"
+	"github.com/fem-library/node"
 	"github.com/gonum/matrix/mat64"
 )
 

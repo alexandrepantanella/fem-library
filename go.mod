@@ -1,4 +1,4 @@
-module alexcloud.it/dsm
+module github.com/fem-library
 
 go 1.22.1
 
