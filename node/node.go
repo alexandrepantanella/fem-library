@@ -15,9 +15,8 @@ type Force1D struct {
 
 // Constraint rappresenta i vincoli applicati a un nodo
 type Constraint1D struct {
-	X, Y, Z    int // Vincoli sulle direzioni x, y, z
-	RX, RY, RZ int // Vincoli di rotazione
-}
+	X  int // Vincoli sulle direzioni x
+	}
 
 // Vincoli
 func (n *Node1D) SetFreeCostrain() { // Libero

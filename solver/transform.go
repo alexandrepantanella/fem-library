@@ -1,4 +1,4 @@
-package transform
+package solver
 
 import (
 	"math"

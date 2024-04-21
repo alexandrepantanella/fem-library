@@ -8,18 +8,18 @@ import (
 	"github.com/fem-library/material"
 	"github.com/fem-library/node"
 	"github.com/fem-library/section"
-	"github.com/fem-library/transform"
+	"github.com/fem-library/solver"
 )
 
-type Beam3DEuler struct {
+type Beam3D struct {
 	ID          int64                       // ID del beam
 	Material    material.Material           // Materiale del beam
 	Section     section.GeometricProperties //Proprietà geometriche
 	Node1       node.Node3D                 // Nodo 1
 	Node2       node.Node3D                 // Nodo 2
-	ThetaX      float64                     //Angolo con asse X
-	ThetaY      float64                     //Angolo con asse Y
-	ThetaZ      float64                     //Angolo con asse z
+	ThetaX      float64                     // Angolo con asse X
+	ThetaY      float64                     // Angolo con asse Y
+	ThetaZ      float64                     // Angolo con asse z
 	Rotation    float64                     // Rotazione del beam
 	Moment      float64                     // Momento applicato al beam
 	Constraints Constraint3D                // Vincoli sui nodi del beam
@@ -39,14 +39,14 @@ type Force3D struct {
 }
 
 // Metodo per calcolare la sua lunghezza
-func (b *Beam3DEuler) Length() float64 {
+func (b *Beam3D) Length() float64 {
 	return math.Sqrt(
 		math.Pow(b.Node2.Coordinates[0]-b.Node1.Coordinates[0], 2) +
 			math.Pow(b.Node2.Coordinates[1]-b.Node1.Coordinates[1], 2) +
 			math.Pow(b.Node2.Coordinates[2]-b.Node1.Coordinates[2], 2))
 }
 
-func (b *Beam3DEuler) SetAxisAngle() {
+func (b *Beam3D) SetAxisAngle() {
 	// Calcola la differenza vettoriale tra i punti
 	dx := b.Node2.Coordinates[0] - b.Node1.Coordinates[0]
 	dy := b.Node2.Coordinates[1] - b.Node1.Coordinates[1]
@@ -84,17 +84,17 @@ func (b *Beam3DEuler) SetAxisAngle() {
 }
 
 // Metodo per restituire i gradi di libertà
-func (b *Beam3DEuler) DoF() int {
+func (b *Beam3D) DoF() int {
 	return 3
 }
 
 // Metodo per restituire il suo numero
-func (b *Beam3DEuler) ElementNumber() int64 {
+func (b *Beam3D) ElementNumber() int64 {
 	return b.ID
 }
 
 // StiffnessMatrix calcola la matrice di rigidità del beam
-func (b *Beam3DEuler) StiffnessMatrix() *mat.Dense {
+func (b *Beam3D) StiffnessMatrix() *mat.Dense {
 
 	// Calcola i coefficienti per la matrice di rigidità
 	A := b.Section.Area
@@ -161,7 +161,7 @@ func (b *Beam3DEuler) StiffnessMatrix() *mat.Dense {
 }
 
 // MassMatrix calcola la matrice delle masse del beam
-func (b *Beam3DEuler) MassMatrix() *mat.Dense {
+func (b *Beam3D) MassMatrix() *mat.Dense {
 	// Estrae la densità del materiale
 	density := b.Material.Density
 
@@ -192,12 +192,12 @@ func (b *Beam3DEuler) MassMatrix() *mat.Dense {
 	return massMatrix
 }
 
-func (b *Beam3DEuler) GlobalStiffnessMatrix() *mat.Dense {
+func (b *Beam3D) GlobalStiffnessMatrix() *mat.Dense {
 	// Calcola gli angoli con gli assi
 	b.SetAxisAngle()
 
 	// Calcola la trasposta della matrice di trasformazione
-	transformation := *transform.TransformMatrix3D(b.ThetaX, b.ThetaY, b.ThetaZ)
+	transformation := *solver.TransformMatrix3D(b.ThetaX, b.ThetaY, b.ThetaZ)
 	transposedTransformation := transformation.T()
 
 	// Moltiplica T^T * K_local
@@ -212,11 +212,11 @@ func (b *Beam3DEuler) GlobalStiffnessMatrix() *mat.Dense {
 }
 
 // Metodo per applicare i vincoli ai nodi del beam
-func (b *Beam3DEuler) ApplyConstraints(constraints Constraint3D) {
+func (b *Beam3D) ApplyConstraints(constraints Constraint3D) {
 	b.Constraints = constraints
 }
 
 // Metodo per applicare le forze ai nodi del beam
-func (b *Beam3DEuler) ApplyForces(forces Force3D) {
+func (b *Beam3D) ApplyForces(forces Force3D) {
 	b.Forces = forces
 }

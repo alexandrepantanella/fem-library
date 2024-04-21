@@ -10,9 +10,9 @@ import (
 	"gonum.org/v1/gonum/mat"
 )
 
-func TestBeam3DEulerStiffnessMatrix() {
+func TestBeam3DStiffnessMatrix() {
 	// Definizione dei parametri per il beam
-	beam := element.Beam3DEuler{
+	beam := element.Beam3D{
 		ID: 1,
 		Material: material.Material{
 			YoungModulus: 210e9, // Pa
