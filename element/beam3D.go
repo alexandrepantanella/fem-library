@@ -8,7 +8,6 @@ import (
 	"github.com/fem-library/material"
 	"github.com/fem-library/node"
 	"github.com/fem-library/section"
-	"github.com/fem-library/solver"
 )
 
 type Beam3D struct {
@@ -197,7 +196,7 @@ func (b *Beam3D) GlobalStiffnessMatrix() *mat.Dense {
 	b.SetAxisAngle()
 
 	// Calcola la trasposta della matrice di trasformazione
-	transformation := *solver.TransformMatrix3D(b.ThetaX, b.ThetaY, b.ThetaZ)
+	transformation := *transform.TransformMatrix3D(b.ThetaX, b.ThetaY, b.ThetaZ)
 	transposedTransformation := transformation.T()
 
 	// Moltiplica T^T * K_local
