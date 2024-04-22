@@ -5,12 +5,6 @@ type Node1D struct {
 	ID         int          // Identificativo univoco del nodo
 	Coordinate float64      // Coordinata del nodo
 	Constraint Constraint1D // Vincoli sul nodo
-	Force      Force1D      // Forze applicate al nodo
-}
-
-// Force rappresenta le forze applicate a un nodo
-type Force1D struct {
-	X float64 // Forze nelle direzioni x
 }
 
 // Constraint rappresenta i vincoli applicati a un nodo
@@ -31,13 +25,6 @@ type Node2D struct {
 	ID          int          // Identificativo univoco del nodo
 	Coordinates [2]float64   // Coordinate x, y del nodo
 	Constraint  Constraint2D // Vincoli sul nodo
-	Force       Force2D      // Forze applicate al nodo
-}
-
-// Force rappresenta le forze applicate a un nodo
-type Force2D struct {
-	X, Y float64 // Forze nelle direzioni x,y
-	Mz   float64 //Momento
 }
 
 // Constraint rappresenta i vincoli applicati a un nodo
@@ -83,13 +70,6 @@ type Node3D struct {
 	ID          int          // Identificativo univoco del nodo
 	Coordinates [3]float64   // Coordinate x, y, z del nodo
 	Constraint  Constraint3D // Vincoli sul nodo
-	Force       Force3D      // Forze applicate al nodo
-}
-
-// Force rappresenta le forze applicate a un nodo
-type Force3D struct {
-	X, Y, Z    float64 // Forze nelle direzioni x,y,z
-	Mx, My, Mz float64 // Momenti sui tre assi
 }
 
 // Constraint rappresenta i vincoli applicati a un nodo

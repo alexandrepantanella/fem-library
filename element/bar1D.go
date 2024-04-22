@@ -3,6 +3,7 @@ package element
 import (
 	"math"
 
+	"github.com/fem-library/force"
 	"github.com/fem-library/material"
 	"github.com/fem-library/node"
 	"github.com/fem-library/section"
@@ -15,9 +16,10 @@ type Bar1D struct {
 	Node1    node.Node1D                 // Nodo iniziale
 	Node2    node.Node1D                 // Nodo finale
 	Section  section.GeometricProperties // Proprietà geometriche della sezione
-	KLocal   *mat.Dense                  //Matrice di rigidezza locale
-	KGlobal  *mat.Dense					 //Matrice di rigidezza globale
-	Mass     *mat.Dense                  //Matrice delle masse
+	KLocal   *mat.Dense                  // Matrice di rigidezza locale
+	KGlobal  *mat.Dense					 // Matrice di rigidezza globale
+	Mass     *mat.Dense                  // Matrice delle masse
+	Force    force.Force1D               // Vettore delle forze applicate sull'elemento
 }
 
 // Metodo per calcolare la sua lunghezza

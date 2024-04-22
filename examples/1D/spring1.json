@@ -4,32 +4,7 @@
     "Type": "SL",
     "Behaviour": "ISO",
     "Analisys1D": {
-        "Bar1D": [
-            {
-                "ID": 1,
-                "Node1": {
-                    "ID": 1,
-                    "Coordinate": 0.0,
-                    "Constraint": {
-                        "X": 1
-                    },
-                    "Force": {
-                        "X": 0.0
-                    }
-                },
-                "Node2": {
-                    "ID": 4,
-                    "Coordinate": 30.0,
-                    "Constraint": {
-                        "X": 0
-                    },
-                    "Force": {
-                        "X": 300.0
-                    }
-                },
-                "S": 150.0
-            }
-        ],
+        
         "Spring1D": [
             {
                 "ID": 1,
@@ -38,9 +13,6 @@
                     "Coordinate": 0.0,
                     "Constraint": {
                         "X": 1
-                    },
-                    "Force": {
-                        "X": 0.0
                     }
                 },
                 "Node2": {
@@ -48,12 +20,13 @@
                     "Coordinate": 10.0,
                     "Constraint": {
                         "X": 0
-                    },
-                    "Force": {
-                        "X": 0.0
                     }
                 },
-                "K": 100.0
+                "K": 100.0,
+                "Force": {
+                    "X1": 100.0,
+                    "X2": 0.0
+                }
             },
             {
                 "ID": 2,
@@ -62,9 +35,6 @@
                     "Coordinate": 10.0,
                     "Constraint": {
                         "X": 0
-                    },
-                    "Force": {
-                        "X": 0.0
                     }
                 },
                 "Node2": {
@@ -72,23 +42,21 @@
                     "Coordinate": 20.0,
                     "Constraint": {
                         "X": 0
-                    },
-                    "Force": {
-                        "X": 1000.0
                     }
                 },
-                "K": 500.0
+                "K": 500.0,
+                "Force": {
+                    "X1": -10.0,
+                    "X2": 0.0
+                }
             },
             {
-                "ID": 2,
+                "ID": 3,
                 "Node1": {
                     "ID": 3,
                     "Coordinate": 20.0,
                     "Constraint": {
                         "X": 0
-                    },
-                    "Force": {
-                        "X": 0.0
                     }
                 },
                 "Node2": {
@@ -96,12 +64,13 @@
                     "Coordinate": 30.0,
                     "Constraint": {
                         "X": 0
-                    },
-                    "Force": {
-                        "X": 300.0
                     }
                 },
-                "K": 150.0
+                "K": 150.0,
+                "Force": {
+                    "X1": 0.0,
+                    "X2": 0.0
+                }
             }
         ],
         "Beam1D": []

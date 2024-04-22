@@ -3,6 +3,7 @@ package element
 import (
 	"math"
 
+	"github.com/fem-library/force"
 	"github.com/fem-library/material"
 	"github.com/fem-library/node"
 	"github.com/fem-library/section"
@@ -18,6 +19,7 @@ type Beam1D struct {
 	KLocal   *mat.Dense                  //Matrice di rigidezza locale
 	KGlobal  *mat.Dense                  //Matrice di rigidezza globale
 	Mass     *mat.Dense                  //Matrice delle masse
+	Force    force.Force1D               // Vettore delle forze applicate sull'elemento
 }
 
 // Metodo per calcolare la sua lunghezza

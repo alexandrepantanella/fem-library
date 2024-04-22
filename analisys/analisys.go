@@ -12,6 +12,7 @@ type Analisys struct {
 	Analisys2D	Analisys2D
 	Analisys3D	Analisys3D
 	GlobalStiffnessMatrix mat.Dense //Matrice di rigidezza globale
+	Force	 *mat.VecDense	//Vettore delle forze applicate ai nodi nel sist di rif globale
 }
 
 type Analisys1D struct {
