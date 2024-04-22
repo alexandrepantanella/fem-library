@@ -3,6 +3,7 @@ package element
 import (
 	"github.com/fem-library/node"
 	"github.com/gonum/matrix/mat64"
+	"gonum.org/v1/gonum/mat"
 )
 
 type Spring1D struct {
@@ -10,6 +11,9 @@ type Spring1D struct {
 	Node1 node.Node1D // Nodo iniziale
 	Node2 node.Node1D // Nodo finale
 	K     float64     // Costante elastica
+	KLocal   *mat.Dense                  //Matrice di rigidezza locale
+	KGlobal  *mat.Dense                  //Matrice di rigidezza globale
+	Mass     *mat.Dense                  //Matrice delle masse
 }
 
 // Metodo per restituire il suo numero

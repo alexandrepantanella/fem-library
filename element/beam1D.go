@@ -15,6 +15,9 @@ type Beam1D struct {
 	Node1    node.Node1D                 // Nodo 1
 	Node2    node.Node1D                 // Nodo 2
 	Section  section.GeometricProperties //Proprietà geometriche
+	KLocal   *mat.Dense                  //Matrice di rigidezza locale
+	KGlobal  *mat.Dense                  //Matrice di rigidezza globale
+	Mass     *mat.Dense                  //Matrice delle masse
 }
 
 // Metodo per calcolare la sua lunghezza

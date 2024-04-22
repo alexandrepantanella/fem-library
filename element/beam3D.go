@@ -8,6 +8,7 @@ import (
 	"github.com/fem-library/material"
 	"github.com/fem-library/node"
 	"github.com/fem-library/section"
+	"github.com/fem-library/transform"
 )
 
 type Beam3D struct {
