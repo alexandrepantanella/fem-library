@@ -2,7 +2,6 @@ package element
 
 import (
 	"github.com/fem-library/node"
-	"github.com/gonum/matrix/mat64"
 	"gonum.org/v1/gonum/mat"
 )
 
@@ -22,22 +21,21 @@ func (r *Spring1D) ElementNumber() int64 {
 }
 
 // StiffnessMatrix calcola la matrice di rigidità della molla
-func (r *Spring1D) StiffnessMatrix() *mat64.Dense {
+func (r *Spring1D) StiffnessMatrix() {
 
 	k := r.K
-	stiffnessMatrix := mat64.NewDense(2, 2, nil)
+	stiffnessMatrix := mat.NewDense(2, 2, nil)
 
 	// Assegna i valori della matrice di rigidezza
 	stiffnessMatrix.Set(0, 0, k)
 	stiffnessMatrix.Set(0, 1, -k)
-	stiffnessMatrix.Set(1, 0, k)
-	stiffnessMatrix.Set(1, 1, -k)
+	stiffnessMatrix.Set(1, 0, -k)
+	stiffnessMatrix.Set(1, 1, k)
 
-	return stiffnessMatrix
+	r.KLocal =  stiffnessMatrix
 }
 
 // GlobalStiffnessMatrix calcola la matrice di rigidità globale per una molla in 1D
-func (r *Spring1D) GlobalStiffnessMatrix() *mat64.Dense {
-	// Calcola la matrice di rigidità locale
-	return r.StiffnessMatrix()
+func (r *Spring1D) GlobalStiffnessMatrix() {
+	r.KGlobal = r.KLocal
 }

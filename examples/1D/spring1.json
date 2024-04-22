@@ -1,57 +1,109 @@
 {
+    
     "Dim": 1,
     "Type": "SL",
     "Behaviour": "ISO",
-    "Bar1D": [],
-    "Spring1D": [
-        {
-            "ID": 1,
-            "Node1": {
+    "Analisys1D": {
+        "Bar1D": [
+            {
                 "ID": 1,
-                "Coordinate": 0.0,
-                "Constraint": {
-                    "X": 1
+                "Node1": {
+                    "ID": 1,
+                    "Coordinate": 0.0,
+                    "Constraint": {
+                        "X": 1
+                    },
+                    "Force": {
+                        "X": 0.0
+                    }
                 },
-                "Force": {
-                    "X": 0.0
-                }
+                "Node2": {
+                    "ID": 4,
+                    "Coordinate": 30.0,
+                    "Constraint": {
+                        "X": 0
+                    },
+                    "Force": {
+                        "X": 300.0
+                    }
+                },
+                "S": 150.0
+            }
+        ],
+        "Spring1D": [
+            {
+                "ID": 1,
+                "Node1": {
+                    "ID": 1,
+                    "Coordinate": 0.0,
+                    "Constraint": {
+                        "X": 1
+                    },
+                    "Force": {
+                        "X": 0.0
+                    }
+                },
+                "Node2": {
+                    "ID": 2,
+                    "Coordinate": 10.0,
+                    "Constraint": {
+                        "X": 0
+                    },
+                    "Force": {
+                        "X": 0.0
+                    }
+                },
+                "K": 100.0
             },
-            "Node2": {
+            {
                 "ID": 2,
-                "Coordinate": 10.0,
-                "Constraint": {
-                    "X": 0
+                "Node1": {
+                    "ID": 2,
+                    "Coordinate": 10.0,
+                    "Constraint": {
+                        "X": 0
+                    },
+                    "Force": {
+                        "X": 0.0
+                    }
                 },
-                "Force": {
-                    "X": 0.0
-                }
+                "Node2": {
+                    "ID": 3,
+                    "Coordinate": 20.0,
+                    "Constraint": {
+                        "X": 0
+                    },
+                    "Force": {
+                        "X": 1000.0
+                    }
+                },
+                "K": 500.0
             },
-            "K": 100.0
-        },
-        {
-            "ID": 2,
-            "Node1": {
+            {
                 "ID": 2,
-                "Coordinate": 10.0,
-                "Constraint": {
-                    "X": 0
+                "Node1": {
+                    "ID": 3,
+                    "Coordinate": 20.0,
+                    "Constraint": {
+                        "X": 0
+                    },
+                    "Force": {
+                        "X": 0.0
+                    }
                 },
-                "Force": {
-                    "X": 0.0
-                }
-            },
-            "Node2": {
-                "ID": 3,
-                "Coordinate": 20.0,
-                "Constraint": {
-                    "X": 0
+                "Node2": {
+                    "ID": 4,
+                    "Coordinate": 30.0,
+                    "Constraint": {
+                        "X": 0
+                    },
+                    "Force": {
+                        "X": 300.0
+                    }
                 },
-                "Force": {
-                    "X": 1000.0
-                }
-            },
-            "K": 500.0
-        }
-    ],
-    "Beam1D": []
+                "K": 150.0
+            }
+        ],
+        "Beam1D": []
+    }
 }

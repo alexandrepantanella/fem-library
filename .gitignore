@@ -1,0 +1,19 @@
+# File di log
+*.log
+
+# Directory dei binari
+bin/
+
+# Directory degli eseguibili
+*.exe
+*.out
+
+# Directory delle dipendenze
+vendor/
+
+# File di configurazione per l'editor
+.idea/
+.vscode/
+
+# File di configurazione per il debugger Delve
+.DS_Store

@@ -16,7 +16,7 @@ type Bar1D struct {
 	Node2    node.Node1D                 // Nodo finale
 	Section  section.GeometricProperties // Proprietà geometriche della sezione
 	KLocal   *mat.Dense                  //Matrice di rigidezza locale
-	KGlobal  *mat.Dense                  //Matrice di rigidezza globale
+	KGlobal  *mat.Dense					 //Matrice di rigidezza globale
 	Mass     *mat.Dense                  //Matrice delle masse
 }
 
@@ -30,48 +30,25 @@ func (r *Bar1D) ElementNumber() int64 {
 	return r.ID
 }
 
-// Metodo per restituire la matrice di rigidezza locale
-func (r *Bar1D) GetKLocal() *mat.Dense {
-	if r.KLocal == nil {
-		r.KLocal = r.StiffnessMatrix()
-	}
-	return r.KLocal
-}
-
-// Metodo per restituire la matrice di rigidezza globale
-func (r *Bar1D) GetKGlobal() *mat.Dense {
-	if r.KGlobal == nil {
-		r.KGlobal = r.GlobalStiffnessMatrix()
-	}
-	return r.KGlobal
-}
-
-// Metodo per restituire la matrice delle masse
-func (r *Bar1D) GetMass() *mat.Dense {
-	if r.Mass == nil {
-		r.Mass = r.MassMatrix()
-	}
-	return r.Mass
-}
-
 // StiffnessMatrix calcola la matrice di rigidità dell'asta
-func (r *Bar1D) StiffnessMatrix() *mat.Dense {
+func (r *Bar1D) StiffnessMatrix(){
 	length := r.Length()
 	area := r.Section.Area
 	modulus := r.Material.YoungModulus
 
 	k := (modulus * area) / length
-	stiffnessMatrix := mat.NewDense(2, 2, nil)
+	//stiffnessMatrix := mat.NewDense(2, 2, nil)
+	stiffnessMatrix := mat.NewDense(2,2, nil)
 	stiffnessMatrix.Set(0, 0, k)
 	stiffnessMatrix.Set(0, 1, -k)
 	stiffnessMatrix.Set(1, 0, -k)
 	stiffnessMatrix.Set(1, 1, k)
 
-	return stiffnessMatrix
+	r.KLocal = stiffnessMatrix
 }
 
 // MassMatrix calcola la matrice delle masse dell'asta
-func (r *Bar1D) MassMatrix() *mat.Dense {
+func (r *Bar1D) MassMatrix() {
 	length := r.Length()
 	density := r.Material.Density
 	area := r.Section.Area
@@ -82,11 +59,11 @@ func (r *Bar1D) MassMatrix() *mat.Dense {
 	massMatrix.Set(1, 0, mass/6)
 	massMatrix.Set(1, 1, mass/3)
 
-	return massMatrix
+	r.Mass = massMatrix
 }
 
 // GlobalStiffnessMatrix calcola la matrice di rigidità globale per un'asta in 1D
-func (r *Bar1D) GlobalStiffnessMatrix() *mat.Dense {
+func (r *Bar1D) GlobalStiffnessMatrix() {
 	// Calcola la matrice di rigidità locale
-	return r.StiffnessMatrix()
+	r.KGlobal = r.KLocal
 }

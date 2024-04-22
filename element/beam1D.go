@@ -36,7 +36,7 @@ func (b *Beam1D) ElementNumber() int64 {
 }
 
 // StiffnessMatrix calcola la matrice di rigidità del beam
-func (b *Beam1D) StiffnessMatrix() *mat.Dense {
+func (b *Beam1D) StiffnessMatrix() {
 	length := b.Length()
 	area := b.Section.Area
 	modulus := b.Material.YoungModulus
@@ -46,11 +46,11 @@ func (b *Beam1D) StiffnessMatrix() *mat.Dense {
 	stiffnessMatrix.Set(0, 1, -k)
 	stiffnessMatrix.Set(1, 0, -k)
 	stiffnessMatrix.Set(1, 1, k)
-	return stiffnessMatrix
+	b.KLocal = stiffnessMatrix
 }
 
 // MassMatrix calcola la matrice delle masse del beam
-func (b *Beam1D) MassMatrix() *mat.Dense {
+func (b *Beam1D) MassMatrix() {
 	length := b.Length()
 	density := b.Material.Density
 	mass := density * length
@@ -59,11 +59,10 @@ func (b *Beam1D) MassMatrix() *mat.Dense {
 	massMatrix.Set(0, 1, mass/6)
 	massMatrix.Set(1, 0, mass/6)
 	massMatrix.Set(1, 1, mass/3)
-	return massMatrix
+	b.Mass = massMatrix
 }
 
 // GlobalStiffnessMatrix calcola la matrice di rigidità globale per una trave monodimensionale
-func (b *Beam1D) GlobalStiffnessMatrix() *mat.Dense {
-	// Calcola la matrice di rigidità locale
-	return b.StiffnessMatrix()
+func (b *Beam1D) GlobalStiffnessMatrix() {
+	b.KGlobal = b.KLocal
 }

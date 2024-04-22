@@ -207,7 +207,6 @@ func (b *Beam3D) GlobalStiffnessMatrix() *mat.Dense {
 	// Moltiplica (T^T * K_local) * T
 	var globalStiffness mat.Dense
 	globalStiffness.Mul(&temp1, &transformation)
-
 	return &globalStiffness
 }
 

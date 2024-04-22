@@ -6,6 +6,8 @@ import (
 	"os"
 
 	"github.com/fem-library/analisys"
+	"github.com/fem-library/solver"
+	"gonum.org/v1/gonum/mat"
 )
 
 func main() {
@@ -26,19 +28,39 @@ func main() {
 	}
 
 	// Decodifica il JSON nella struttura Analisys1D
-	var analisys analisys.Analisys1D
+	var analisys analisys.Analisys
 	err = json.Unmarshal(jsonData, &analisys)
 	if err != nil {
 		fmt.Println("Errore nella decodifica JSON:", err)
 		return
 	}
+	
 
-	// Stampa la struttura popolata
-	fmt.Printf("%+v\n", analisys)
-
-	// Itera su ogni molla e stampa il risultato del metodo StiffnessMatrix
-	for _, spring := range analisys.Spring1D {
-		fmt.Printf("Spring ID: %d\n", spring.ID)
-		fmt.Println(spring.StiffnessMatrix())
+	switch 
+	{
+	case analisys.Dim == 1: 
+		Run1D(&analisys)
+	case analisys.Dim == 2: 
+		Run2D(&analisys)
+	case analisys.Dim == 3: 
+		Run3D(&analisys)
+	default: 
+		fmt.Println(" Tipo analisi non definita")
 	}
+}
+
+func Run1D(analisys *analisys.Analisys){
+	if analisys == nil {
+        fmt.Println("Errore: il puntatore analisys è nil")
+        return
+    }
+	solver.AssembleGlobalStiffnessMatrix1D(analisys)
+	fmt.Println("Matrice Globale:")
+	fmt.Println(mat.Formatted(&analisys.GlobalStiffnessMatrix))
+}
+
+func Run2D(analisys *analisys.Analisys){
+}
+
+func Run3D(analisys *analisys.Analisys){
 }

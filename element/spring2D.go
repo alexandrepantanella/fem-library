@@ -2,7 +2,7 @@ package element
 
 import (
 	"github.com/fem-library/node"
-	"github.com/gonum/matrix/mat64"
+	"gonum.org/v1/gonum/mat"
 )
 
 type Spring2D struct {
@@ -18,13 +18,13 @@ func (r *Spring2D) ElementNumber() int64 {
 }
 
 // StiffnessMatrix calcola la matrice di rigidità della molla
-func (r *Spring2D) StiffnessMatrix() *mat64.Dense {
+func (r *Spring2D) StiffnessMatrix() *mat.Dense {
 
 	// Calcola i coefficienti per la matrice di rigidità
 	k := r.K
 
 	// Crea la matrice di rigidità 12x12
-	stiffnessMatrix := mat64.NewDense(6, 6, nil)
+	stiffnessMatrix := mat.NewDense(6, 6, nil)
 
 	stiffnessMatrix.Set(0, 0, k)
 	stiffnessMatrix.Set(0, 3, -k)
@@ -35,7 +35,7 @@ func (r *Spring2D) StiffnessMatrix() *mat64.Dense {
 }
 
 // GlobalStiffnessMatrix calcola la matrice di rigidità globale per una molla in 1D
-func (r *Spring2D) GlobalStiffnessMatrix() *mat64.Dense {
+func (r *Spring2D) GlobalStiffnessMatrix() *mat.Dense {
 	// Calcola la matrice di rigidità locale
 	return r.StiffnessMatrix()
 }
