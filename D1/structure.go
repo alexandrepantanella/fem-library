@@ -13,7 +13,7 @@ type Analysis struct {
 	Beam        []Beam			// Beam elements
 	Node    	[]Node			// Spring elements
 	Kg 			mat.Dense   	// Global stiffness matrix
-	Force	*	mat.VecDense	// Vector of forces applied to nodes in the global reference system
+	Force		mat.VecDense	// Vector of forces applied to nodes in the global reference system
 }
 
 type Spring struct {
@@ -23,6 +23,8 @@ type Spring struct {
 	N2      int                 // Final node
 	Kl      *mat.Dense          // Local stiffness matrix
 	Kg      *mat.Dense          // Global stiffness matrix
+	F1      float64        		// Force on node 1
+	F2      float64        		// Force on node 2
 }
 
 type Bar struct {
@@ -36,7 +38,8 @@ type Bar struct {
 	Kl      *mat.Dense          // Local stiffness matrix
 	Kg      *mat.Dense          // Global stiffness matrix
 	Mass    *mat.Dense          // Mass matrix
-	//F    force.Force1D         // Vector of forces applied to the element
+	F1      float64        		// Force on node 1
+	F2      float64        		// Force on node 2
 }
 
 type Beam struct {
@@ -50,7 +53,8 @@ type Beam struct {
 	Kl      *mat.Dense          // Local stiffness matrix
 	Kg      *mat.Dense          // Global stiffness matrix
 	Mass    *mat.Dense          // Mass matrix
-	//F    force.Force1D         // Vector of forces applied to the element
+	F1      float64        		// Force on node 1
+	F2      float64        		// Force on node 2
 }
 
 // Node1D represents a node in a one-dimensional system

@@ -4,63 +4,71 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strconv"
 
-	"github.com/fem-library/analisys"
-	"github.com/fem-library/solver"
-	"gonum.org/v1/gonum/mat"
+	"github.com/fem-library/D1"
 )
 
 func main() {
-	// Controllo se è stato fornito il nome del file come argomento
-	if len(os.Args) < 2 {
-		fmt.Println("Usage: go run main.go <filename.json>")
+	// Checking if the file name has been provided as an argument.
+	if len(os.Args) < 3 {
+		fmt.Println("Usage: go run <analisysDim> main.go <filename.json>")
 		return
 	}
 
-	// Leggo il nome del file JSON dall'argomento della riga di comando
-	fileName := os.Args[1]
+	// Reading dimension analisys
+	dimStr := os.Args[1]
+	dim, err := strconv.Atoi(dimStr)
+	if err != nil || dim >3 {
+		fmt.Println("Invalid dimension:", dimStr)
+		return
+	}
 
-	// Leggere il contenuto del file JSON
+	// Reading the name of the JSON file from the command-line argument.
+	fileName := os.Args[2]
+
+	// Reading the content of the JSON file.
 	jsonData, err := os.ReadFile(fileName)
 	if err != nil {
-		fmt.Println("Errore nella lettura del file JSON:", err)
+		fmt.Println("Error while reading the JSON file:", err)
 		return
 	}
 
-	// Decodifica il JSON nella struttura Analisys1D
-	var analisys analisys.Analisys
-	err = json.Unmarshal(jsonData, &analisys)
-	if err != nil {
-		fmt.Println("Errore nella decodifica JSON:", err)
-		return
-	}
 	
-
 	switch 
 	{
-	case analisys.Dim == 1: 
-		Run1D(&analisys)
-	case analisys.Dim == 2: 
-		Run2D(&analisys)
-	case analisys.Dim == 3: 
-		Run3D(&analisys)
+	case dim == 1: 
+		Run1D(jsonData)
+	// case dim == 2: 
+	// 	Run2D(jsonData)
+	// case dim == 3: 
+	// 	Run3D(jsonData)
 	default: 
-		fmt.Println(" Tipo analisi non definita")
+		fmt.Println("Analisys not defined")
 	}
 }
 
-func Run1D(analisys *analisys.Analisys){
-	if analisys == nil {
-        fmt.Println("Errore: il puntatore analisys è nil")
+func Run1D(jsonData []byte){
+	
+	analisys := D1.Analysis{}
+
+	//  Decode the JSON into the Analisys structure
+	err := json.Unmarshal(jsonData, &analisys)
+	if err != nil {
+		fmt.Println("Error decoding JSON:", err)
+		return
+	}
+	if analisys.Dim == 0 {
+        fmt.Println("Error: JSON decoding was unsuccessful")
         return
     }
-	solver.AssembleGlobalStiffnessMatrix1D(analisys)
-	fmt.Println("Matrice Globale:")
-	fmt.Println(mat.Formatted(&analisys.GlobalStiffnessMatrix))
+	D1.AssembleKG(analisys)
+
+	// fmt.Println(mat.Formatted(&analisys.GlobalStiffnessMatrix))
 }
 
-func Run2D(analisys *analisys.Analisys){
-}
+// func Run2D(analisys *D1.Analisys){
+// }
 
-func Run3D(analisys *analisys.Analisys){
-}
+// func Run3D(analisys *D1.Analisys){
+// }
