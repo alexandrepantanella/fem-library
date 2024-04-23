@@ -13,6 +13,7 @@ type Analysis struct {
 	Bar         []Bar				// Bar elements
 	Beam        []Beam				// Beam elements
 	Node    	[]Node				// Spring elements
+	NodalForce	[]NodalForce		// External nodal forces applied
 	NumNode		int					// Number of nodes
 	NumElement	int					// Number of elements
 	Constraints	map[int]bool		// Map of node costrains
@@ -30,8 +31,6 @@ type Spring struct {
 	N2      int                 // Final node
 	Kl      *mat.Dense          // Local stiffness matrix
 	Kg      *mat.Dense          // Global stiffness matrix
-	F1      float64        		// Force on node 1
-	F2      float64        		// Force on node 2
 }
 
 type Bar struct {
@@ -45,8 +44,7 @@ type Bar struct {
 	Kl      *mat.Dense          // Local stiffness matrix
 	Kg      *mat.Dense          // Global stiffness matrix
 	Mass    *mat.Dense          // Mass matrix
-	F1      float64        		// Force on node 1
-	F2      float64        		// Force on node 2
+	F      float64        		// Axial Force distributed on element
 }
 
 type Beam struct {
@@ -60,18 +58,19 @@ type Beam struct {
 	Kl      *mat.Dense          // Local stiffness matrix
 	Kg      *mat.Dense          // Global stiffness matrix
 	Mass    *mat.Dense          // Mass matrix
-	F1      float64        		// Force on node 1
-	F2      float64        		// Force on node 2
+	F      float64        		// Axial Force distributed on element
 }
 
-// Node1D represents a node in a one-dimensional system
 type Node struct {
 	Id          int          // Unique identifier of the node
 	X           float64      // Node coordinate
 	C           bool         // Constraints on the node
 }
+type NodalForce struct {
+	Id          int          // Unique identifier of the node
+	F           float64      // Force applied on node
+}
 
-// Type Output
 type Output struct {
 	Displacement	mat.VecDense	// Vector of displacement
 	Reaction	mat.VecDense		// Vector of reactions
