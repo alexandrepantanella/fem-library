@@ -6,148 +6,179 @@ import (
 	"gonum.org/v1/gonum/mat"
 )
 
-// Function for assembling local stiffness matrices into a global one
+/// Function for assembling local stiffness matrices into a global one
 func AssembleKG(analisys Analysis) {
-	globalSize := 1 * countDistinctNodes(analisys)
+	analisys.CountDistinctNodes()
+	analisys.CountElements()
+	analisys.SetConstraints()
+
+	globalSize := 1 * analisys.NumNode
 	globalMatrix := mat.NewDense(globalSize, globalSize, nil)
 	globalForces := mat.NewVecDense(globalSize, nil)
 
-    // Iterate through the different structures (Spring1D, Bar1D, Beam1D) and fill the global matrix
+	// Iterate through the different structures (Spring1D, Bar1D, Beam1D) and fill the global matrix
 	if len(analisys.Spring) > 0 {
 		for _, element := range analisys.Spring {
 			element.SetKL()
-			element.SetKG()	
-			fmt.Println("Spring Kg:")
-			fmt.Println(mat.Formatted(element.Kg))
+			element.SetKG()
 			fillGlobalStiffnessFromElement(globalMatrix, element.Kg, element.N1, element.N2)
-			fillGlobalForcesFromElement( globalForces, element.F1, element.F2, element.N1, element.N2)
+			fillGlobalForcesFromElement(globalForces, element.F1, element.F2, element.N1, element.N2)
 		}
 	}
 	if len(analisys.Bar) > 0 {
 		for _, element := range analisys.Bar {
+			element.SetL(analisys.Node)
 			element.SetKL()
-			element.SetKG()	
-			fmt.Println("Bar Kg:")
-			fmt.Println(mat.Formatted(element.Kg))
+			element.SetKG()
 			fillGlobalStiffnessFromElement(globalMatrix, element.Kg, element.N1, element.N2)
-			fillGlobalForcesFromElement( globalForces, element.F1, element.F2, element.N1, element.N2)
+			fillGlobalForcesFromElement(globalForces, element.F1, element.F2, element.N1, element.N2)
 		}
 	}
 	if len(analisys.Beam) > 0 {
 		for _, element := range analisys.Beam {
+			element.SetL(analisys.Node)
 			element.SetKL()
-			element.SetKG()	
-			fmt.Println("Beam Kg:")
-			fmt.Println(mat.Formatted(element.Kg))
+			element.SetKG()
 			fillGlobalStiffnessFromElement(globalMatrix, element.Kg, element.N1, element.N2)
-			fillGlobalForcesFromElement( globalForces, element.F1, element.F2, element.N1, element.N2)
+			fillGlobalForcesFromElement(globalForces, element.F1, element.F2, element.N1, element.N2)
 		}
 	}
-    
-    analisys.Kg = *globalMatrix
+
+	analisys.Kg = *globalMatrix
 	analisys.Force = *globalForces
 
-	fmt.Println("Analisys Kg:")
-	fmt.Println(mat.Formatted(globalMatrix))
-	fmt.Println("Analisys Forces:")
-	fmt.Println(mat.Formatted(globalForces))
-
-	//Reducing the global stiffness matrix with constrains
-	reducedMatrix, reducedForces, _ := AssembleReducedKG(analisys)
-
-	fmt.Println("Reduced analisys Kg:")
-	fmt.Println(mat.Formatted(reducedMatrix))
-	fmt.Println("Reduced analisys Forces:")
-	fmt.Println(mat.Formatted(reducedForces))
+	// Remove rows and cols
+	mapCostrain := analisys.Constraints
+	constrainedIDs := make([]int, 0)
+	for id, isConstrained := range mapCostrain {
+		if isConstrained {
+			constrainedIDs = append(constrainedIDs, id-1)
+		}
+	}
+	globalMatrixReduced := removeRowsAndColsFromMatrix(globalMatrix, constrainedIDs, constrainedIDs)
+	globalForcesReduced := removeElementsFromVector(globalForces, constrainedIDs)
+	analisys.KgRed = *globalMatrixReduced
+	analisys.ForceRed = *globalForcesReduced
 	
 	// Solve the system Ku = F
 	var u mat.VecDense
-	err := u.SolveVec(reducedMatrix, reducedForces)
+	err := u.SolveVec(globalMatrixReduced, globalForcesReduced)
 	if err != nil {
 		fmt.Printf("Error while solving the system: %v\n", err)
 		return
 	}
+
+	// Fill the displacements vector
+	analisys.CalculateDisplacements(u)
+
+	// Fill the reactions vector
+	analisys.CalculateReactions()
+
+	PrintSolution(analisys)
 }
 
+// Print solution
+func PrintSolution(analysis Analysis){
+	fmt.Println("Analisys name:")
+	fmt.Println(analysis.Name)
+	fmt.Println(analysis.Description)
+	fmt.Println("")
+	fmt.Println("Nodes:")
+	fmt.Println(analysis.NumNode)
+	fmt.Println("")
+	fmt.Println("Elements:")
+	fmt.Println(analysis.NumElement)
+	fmt.Println("")
+	fmt.Println("Constrains:")
+	fmt.Println(analysis.Constraints)
+	fmt.Println("")
+	fmt.Println("Analisys Kg:")
+	fmt.Println(mat.Formatted(&analysis.Kg))
+	fmt.Println("")
+	fmt.Println("Analisys Forces:")
+	fmt.Println(VecToString(&analysis.Force))
+	fmt.Println("")
+	fmt.Println("Displacements:")
+	fmt.Println(VecToString(&analysis.Output.Displacement))
+	fmt.Println("")
+	fmt.Println("Reactions:")
+	fmt.Println(VecToString(&analysis.Output.Reaction))
+}
+
+/* Utility functions */
+/*********************/
+
+// Function to fill the global stiffness matrix from an element's local stiffness matrix
 func fillGlobalStiffnessFromElement(globalMatrix *mat.Dense, localMatrix *mat.Dense, nodeIndex1 int, nodeIndex2 int) {
-	fmt.Println("Node1:", nodeIndex1, "Node2:", nodeIndex2)
 	globalMatrix.Set(nodeIndex1-1, nodeIndex1-1, globalMatrix.At(nodeIndex1-1, nodeIndex1-1)+localMatrix.At(0, 0))
 	globalMatrix.Set(nodeIndex1-1, nodeIndex2-1, globalMatrix.At(nodeIndex1-1, nodeIndex2-1)+localMatrix.At(0, 1))
-	globalMatrix.Set(nodeIndex2-1, nodeIndex1-1, globalMatrix.At(nodeIndex2-1, nodeIndex1)+localMatrix.At(1, 0))
+	globalMatrix.Set(nodeIndex2-1, nodeIndex1-1, globalMatrix.At(nodeIndex2-1, nodeIndex1-1)+localMatrix.At(1, 0))
 	globalMatrix.Set(nodeIndex2-1, nodeIndex2-1, globalMatrix.At(nodeIndex2-1, nodeIndex2-1)+localMatrix.At(1, 1))
 }
 
-func fillGlobalForcesFromElement( globalForces *mat.VecDense, F1 float64, F2 float64,  nodeIndex1 int, nodeIndex2 int){
-	fmt.Println("Node1:", nodeIndex1, "Node2:", nodeIndex2)
-	globalForces.SetVec(nodeIndex1-1,globalForces.At(nodeIndex1-1,0)+F1)
-	globalForces.SetVec(nodeIndex2-1,globalForces.At(nodeIndex2-1,0)+F2)
-	fmt.Println(mat.Formatted(globalForces))
+// Function to fill the global forces vector from an element's forces
+func fillGlobalForcesFromElement(globalForces *mat.VecDense, F1 float64, F2 float64, nodeIndex1 int, nodeIndex2 int) {
+	globalForces.SetVec(nodeIndex1-1, globalForces.At(nodeIndex1-1, 0)+F1)
+	globalForces.SetVec(nodeIndex2-1, globalForces.At(nodeIndex2-1, 0)+F2)
 }
 
-func AssembleReducedKG(analisys Analysis) (reducedMatrix *mat.Dense, reducedForces *mat.VecDense, err error) {
-	// Ottieni i vincoli dalla struttura
-	constraints := getConstraints(analisys)
-	fmt.Println(constraints)
+// Function to remove rows and columns from a matrix
+func removeRowsAndColsFromMatrix(matrix *mat.Dense, rowIndices []int, colIndices []int) *mat.Dense {
+	rows, cols := matrix.Dims()
+	rowsToRemove := len(rowIndices)
+	colsToRemove := len(colIndices)
 
-	// Calcola le dimensioni della matrice di rigidità globale ridotta
-	reducedSize := countConstrainedNodes(constraints)
-	fmt.Println(reducedSize)
-
-	// Inizializza la matrice di rigidità globale ridotta e il vettore delle forze ridotto
-	reducedMatrix = mat.NewDense(reducedSize, reducedSize, nil)
-	reducedForces = mat.NewVecDense(reducedSize, nil)
-
-	// Itera attraverso gli elementi strutturali e riempi la matrice di rigidità globale ridotta e il vettore delle forze ridotto
-	for _, element := range analisys.Spring {
-		if !isConstrainedNode(constraints, element.N1) && !isConstrainedNode(constraints, element.N2) {
-			// Se entrambi i nodi non sono vincolati, aggiungi le righe e le colonne corrispondenti alla matrice ridotta
-			fillGlobalStiffnessFromElement(reducedMatrix, element.Kg, element.N1, element.N2)
-			fillGlobalForcesFromElement(reducedForces, element.F1, element.F2, element.N1, element.N2)
+	// Create a new data slice excluding the specified rows and columns
+	newData := make([]float64, 0, (rows-rowsToRemove)*(cols-colsToRemove))
+	for i := 0; i < rows; i++ {
+		if !containsIndex(rowIndices, i) {
+			for j := 0; j < cols; j++ {
+				if !containsIndex(colIndices, j) {
+					newData = append(newData, matrix.At(i, j))
+				}
+			}
 		}
 	}
 
-	return reducedMatrix, reducedForces, nil
+	// Create a new matrix with the excluded data
+	newRows := rows - rowsToRemove
+	newCols := cols - colsToRemove
+	newMatrix := mat.NewDense(newRows, newCols, newData)
+
+	return newMatrix
 }
 
-func countDistinctNodes(analisys Analysis) int {
-	nodeMap := make(map[int]bool)
-	springData := analisys.Spring
-	beamData:= analisys.Beam
-	barData:= analisys.Bar
-	for _, spring := range springData {
-		nodeMap[spring.N1] = true
-		nodeMap[spring.N2] = true
-	}
-	for _, beam := range beamData {
-		nodeMap[beam.N1] = true
-		nodeMap[beam.N2] = true
-	}
-	for _, bar := range barData {
-		nodeMap[bar.N1] = true
-		nodeMap[bar.N2] = true
-	}
-	return len(nodeMap)
-}
+// Function to remove elements from a vector
+func removeElementsFromVector(vec *mat.VecDense, indices []int) *mat.VecDense {
+	size := vec.Len()
+	indicesMap := make(map[int]bool)
 
-func getConstraints(analisys Analysis) []int {
-	constraints := make([]int, 0)
-	for _, node := range analisys.Node {
-		if !node.C  {
-			constraints = append(constraints, node.Id)
+	// Create a map of indices to remove for faster access
+	for _, index := range indices {
+		indicesMap[index] = true
+	}
+
+	// Create a new data slice excluding the specified indices
+	newData := make([]float64, 0, size)
+	for i := 0; i < size; i++ {
+		if !indicesMap[i] {
+			newData = append(newData, vec.AtVec(i))
 		}
 	}
-	return constraints
+
+	// Create a new mat.VecDense with the excluded data
+	newVec := mat.NewVecDense(len(newData), newData)
+
+	return newVec
 }
 
-func countConstrainedNodes(constraints []int) int {
-	return len(constraints)
-}
-
-func isConstrainedNode(constraints []int, nodeID int) bool {
-	for _, c := range constraints {
-		if c == nodeID {
+// Function to check if an index exists in a slice of indices
+func containsIndex(indices []int, index int) bool {
+	for _, idx := range indices {
+		if idx == index {
 			return true
 		}
 	}
 	return false
 }
+

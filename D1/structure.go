@@ -5,15 +5,22 @@ import (
 )
 
 type Analysis struct {
-	Dim         int         	// Model dimensions
-	Type        string      	// SL or SNL or DL
-	Behaviour	string      	// ISO or ORTHO (material)
-	Spring      []Spring		// Spring elements
-	Bar         []Bar			// Bar elements
-	Beam        []Beam			// Beam elements
-	Node    	[]Node			// Spring elements
-	Kg 			mat.Dense   	// Global stiffness matrix
-	Force		mat.VecDense	// Vector of forces applied to nodes in the global reference system
+	Name		string				// Analisys name
+	Description	string				// Problem description or references
+	Dim         int         		// Model dimensions
+	Type        string      		// SL or SNL or DL
+	Spring      []Spring			// Spring elements
+	Bar         []Bar				// Bar elements
+	Beam        []Beam				// Beam elements
+	Node    	[]Node				// Spring elements
+	NumNode		int					// Number of nodes
+	NumElement	int					// Number of elements
+	Constraints	map[int]bool		// Map of node costrains
+	Kg 			mat.Dense   		// Global stiffness matrix
+	KgRed		mat.Dense   		// Global stiffness matrix reduced
+	Force		mat.VecDense		// Vector of forces applied to nodes in the global reference system
+	ForceRed	mat.VecDense		// Vector of forces reduced
+	Output		Output				// Output
 }
 
 type Spring struct {
@@ -63,3 +70,10 @@ type Node struct {
 	X           float64      // Node coordinate
 	C           bool         // Constraints on the node
 }
+
+// Type Output
+type Output struct {
+	Displacement	mat.VecDense	// Vector of displacement
+	Reaction	mat.VecDense		// Vector of reactions
+}
+
