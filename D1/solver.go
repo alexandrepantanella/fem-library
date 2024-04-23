@@ -13,16 +13,16 @@ func AssembleKG(analisys Analysis) {
 	analisys.SetConstraints()
 
 	globalSize := 1 * analisys.NumNode
-	globalMatrix := mat.NewDense(globalSize, globalSize, nil)
+	
 	globalForces := mat.NewVecDense(globalSize, nil)
 
 	// Iterate through the different structures (Spring1D, Bar1D, Beam1D) and fill the global matrix
+	globalMatrix := mat.NewDense(globalSize, globalSize, nil)
 	if len(analisys.Spring) > 0 {
 		for _, element := range analisys.Spring {
 			element.SetKL()
 			element.SetKG()
 			fillGlobalStiffnessFromElement(globalMatrix, element.Kg, element.N1, element.N2)
-			fillGlobalForcesFromElement(globalForces, element.F1, element.F2, element.N1, element.N2)
 		}
 	}
 	if len(analisys.Bar) > 0 {
@@ -31,7 +31,6 @@ func AssembleKG(analisys Analysis) {
 			element.SetKL()
 			element.SetKG()
 			fillGlobalStiffnessFromElement(globalMatrix, element.Kg, element.N1, element.N2)
-			fillGlobalForcesFromElement(globalForces, element.F1, element.F2, element.N1, element.N2)
 		}
 	}
 	if len(analisys.Beam) > 0 {
@@ -40,11 +39,14 @@ func AssembleKG(analisys Analysis) {
 			element.SetKL()
 			element.SetKG()
 			fillGlobalStiffnessFromElement(globalMatrix, element.Kg, element.N1, element.N2)
-			fillGlobalForcesFromElement(globalForces, element.F1, element.F2, element.N1, element.N2)
 		}
 	}
-
 	analisys.Kg = *globalMatrix
+
+	// Iterate through the structure and fill the global forces
+	for _, force := range analisys.NodalForce {
+		globalForces.SetVec(force.Id -1, force.F)
+	}
 	analisys.Force = *globalForces
 
 	// Remove rows and cols
@@ -114,12 +116,6 @@ func fillGlobalStiffnessFromElement(globalMatrix *mat.Dense, localMatrix *mat.De
 	globalMatrix.Set(nodeIndex1-1, nodeIndex2-1, globalMatrix.At(nodeIndex1-1, nodeIndex2-1)+localMatrix.At(0, 1))
 	globalMatrix.Set(nodeIndex2-1, nodeIndex1-1, globalMatrix.At(nodeIndex2-1, nodeIndex1-1)+localMatrix.At(1, 0))
 	globalMatrix.Set(nodeIndex2-1, nodeIndex2-1, globalMatrix.At(nodeIndex2-1, nodeIndex2-1)+localMatrix.At(1, 1))
-}
-
-// Function to fill the global forces vector from an element's forces
-func fillGlobalForcesFromElement(globalForces *mat.VecDense, F1 float64, F2 float64, nodeIndex1 int, nodeIndex2 int) {
-	globalForces.SetVec(nodeIndex1-1, globalForces.At(nodeIndex1-1, 0)+F1)
-	globalForces.SetVec(nodeIndex2-1, globalForces.At(nodeIndex2-1, 0)+F2)
 }
 
 // Function to remove rows and columns from a matrix
