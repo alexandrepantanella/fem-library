@@ -27,6 +27,7 @@ type Element1D struct {			// One dimensional elements
 	L       float64             // Length 
 	A       float64             // Cross-sectional area
 	E       float64             // Modulus of elasticity
+	G		float64				//
 	Ix 		float64				// Torsion constant 
 	Iy		float64				// Second moment of area 
 	Iz		float64				// Second moment of area  

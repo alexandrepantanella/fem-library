@@ -17,6 +17,7 @@ type InputData struct {
 	DoF         	int         				// Model Degree of Freedom (1 - 2 - 3 - 6)
 	Type        	string      				// Analisys type (STATICLINEAR - STATICNONLINEAR - DYNAMICLINEAR - DYNAMICNONLINEAR - BUCKLING)
 	Subtype			string						// Subtype	(SPRING1D - BAR1D - TRUSS2D - BEAM2D)
+	Node			[]element.Node				// Array of nodes
 	Element1D		[]element.Element1D			// Array of elements
 	Element2D		[]element.Element2D			// Array of elements
 	Element3D		[]element.Element3D			// Array of elements
@@ -28,7 +29,7 @@ type CalcData struct {
 	NumNode			int						// Number of nodes
 	NumElement		int						// Number of elements
 	Length       	map[int]float64         // Length of elements
-	Constraints		map[int]map[string]bool	// Map of node costrains map[node]map[dof][boolvalue] //ex. [12][u]true
+	Constraints		map[int]map[int]bool	// Map of node costrains map[node]map[dof][boolvalue] //ex. [12][0]true
 	LocalStiffness	map[int]*mat.Dense		// Map of Local Stiffness matrix for elements
 	GlobalStiffness	map[int]*mat.Dense		// Map of Global stiffness matrix for elements
 	Mass  			map[int]*mat.Dense		// Map of Mass matrix for elements
