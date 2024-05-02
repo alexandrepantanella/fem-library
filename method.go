@@ -46,26 +46,38 @@ func (s *Analysis) SetConstraints() {
 	for _, element := range s.InputData.Element1D {
 		node1, _ := getNodeByID(s.InputData.Node, element.N1)
 		node2, _ := getNodeByID(s.InputData.Node, element.N1)
-		setMapConstrain(constraints, node1, node2)
+		setMapConstrain(constraints, node1, node2, s.InputData.DoF)
 	}
 	
 	
 	s.CalcData.Constraints = constraints
 }
 
-func setMapConstrain(constraints map[int]map[int]bool, element interface{}) {
+func setMapConstrain(constraints map[int]map[int]bool, node1 element.Node, node2 element.Node, DoF int) {
+	
 	constraints[node1.Id][0] = node1.Constrains[0]
-	constraints[node1.Id][1] = node1.Constrains[1]
-	constraints[node1.Id][2] = node1.Constrains[2]
-	constraints[node1.Id][3] = node1.Constrains[3]
-	constraints[node1.Id][4] = node1.Constrains[4]
-	constraints[node1.Id][5] = node1.Constrains[5]
 	constraints[node2.Id][0] = node2.Constrains[0]
-	constraints[node2.Id][1] = node2.Constrains[1]
-	constraints[node2.Id][2] = node2.Constrains[2]
-	constraints[node2.Id][3] = node2.Constrains[3]
-	constraints[node2.Id][4] = node2.Constrains[4]
-	constraints[node2.Id][5] = node2.Constrains[5]
+	switch {
+	case DoF == 2:
+		constraints[node1.Id][1] = node1.Constrains[1]
+		constraints[node2.Id][1] = node2.Constrains[1]
+	case DoF == 3:
+		constraints[node1.Id][1] = node1.Constrains[1]
+		constraints[node2.Id][1] = node2.Constrains[1]
+		constraints[node1.Id][2] = node1.Constrains[3]
+		constraints[node2.Id][2] = node2.Constrains[3]
+	case DoF == 6:
+		constraints[node1.Id][1] = node1.Constrains[1]
+		constraints[node2.Id][1] = node2.Constrains[1]
+		constraints[node1.Id][2] = node1.Constrains[2]
+		constraints[node2.Id][2] = node2.Constrains[2]
+		constraints[node1.Id][3] = node1.Constrains[3]
+		constraints[node2.Id][3] = node2.Constrains[3]
+		constraints[node1.Id][4] = node1.Constrains[4]
+		constraints[node2.Id][4] = node2.Constrains[4]
+		constraints[node1.Id][5] = node1.Constrains[5]
+		constraints[node2.Id][5] = node2.Constrains[5]
+	}	
 }
 
 // Auxiliary Function to get a node by its ID

@@ -40,10 +40,10 @@ type Element1D struct {			// One dimensional elements
 
 type Element2D struct {			// Two dimension elements
 	Id      int                 // Element ID
-	Type	string				// Element type: BAR - SPRING - BEAM 
+	Type	string				// Element type: 
 }
 
 type Element3D struct {			// Three dimension elements
 	Id      int                 // Element ID
-	Type	string				// Element type: BAR - SPRING - BEAM 
+	Type	string				// Element type: 
 }
