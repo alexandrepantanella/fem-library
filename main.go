@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-
-	"github.com/fem-library/D1"
 )
 
 func main() {
@@ -50,7 +48,7 @@ func main() {
 
 func Run1D(jsonData []byte){
 	
-	analisys := D1.Analysis{}
+	analisys := Analysis{}
 
 	//  Decode the JSON into the Analisys structure
 	err := json.Unmarshal(jsonData, &analisys)
@@ -58,11 +56,12 @@ func Run1D(jsonData []byte){
 		fmt.Println("Error decoding JSON:", err)
 		return
 	}
-	if analisys.Dim == 0 {
+	if analisys.InputData.DoF == 0 {
         fmt.Println("Error: JSON decoding was unsuccessful")
         return
     }
-	D1.AssembleKG(analisys)
+	checkStructure(analisys)
+	Solve(analisys)
 
 	// fmt.Println(mat.Formatted(&analisys.GlobalStiffnessMatrix))
 }
