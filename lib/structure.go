@@ -1,4 +1,4 @@
-package main
+package lib
 
 import (
 	"gonum.org/v1/gonum/mat"
@@ -12,16 +12,17 @@ type Analysis struct {
 
 type InputData struct {
 	Name			string						// Analisys name
-	Description		string						// Problem description or references
+	Description		string						// Problem description
+	Reference		string						// Problem references
 	DoF         	int         				// Model Degree of Freedom (1 - 2 - 3 - 6)
 	Type        	string      				// Analisys type (STATICLINEAR - STATICNONLINEAR - DYNAMICLINEAR - DYNAMICNONLINEAR - BUCKLING)
 	Subtype			string						// Subtype	(SPRING1D - BAR1D - TRUSS2D - BEAM2D)
-	Node			[]Node				// Array of nodes
-	Element1D		[]Element1D			// Array of elements
-	Element2D		[]Element2D			// Array of elements
-	Element3D		[]Element3D			// Array of elements
-	ElementForce	[]ElementForce		// Array of force elements
-	NodeForce		[]NodalForce		// Array of force elements
+	Node			[]Node						// Array of nodes
+	Element1D		[]Element1D					// Array of elements
+	Element2D		[]Element2D					// Array of elements
+	Element3D		[]Element3D					// Array of elements
+	ElementForce	[]ElementForce				// Array of force elements
+	NodeForce		[]NodalForce				// Array of force elements
 }
 
 type CalcData struct {
@@ -33,6 +34,7 @@ type CalcData struct {
 	GlobalStiffness	map[int]*mat.Dense		// Map of Global stiffness matrix for elements
 	Mass  			map[int]*mat.Dense		// Map of Mass matrix for elements
 	Force			map[int]*mat.VecDense	// Map of Vector of forces applied to nodes in the global reference system
+	Global			*mat.Dense				// Global stiffness matrix for analisys
 }
 
 type OutputData struct {
@@ -74,6 +76,7 @@ type Element1D struct {			// One dimensional elements
 	N2      int                 // Final node
 	Theta	[]float64			// Element angles with x,y and z
 	KL		*mat.Dense			// Local Stifness Matrix
+	KG		*mat.Dense			// Global Stifness Matrix
 }
 
 type Element2D struct {			// Two dimension elements

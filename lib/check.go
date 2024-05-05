@@ -1,15 +1,24 @@
-package main
+package lib
 
 import (
 	"errors"
 )
 
 
-func checkStructure(a Analysis)  bool {
-	checkNodeIDs(a.InputData.Node)
-	checkElementsPresent(a)
-	checkNodeIDsAssociated(a.InputData.Node, a.InputData.Element1D)
-	return true
+func CheckStructure(a Analysis) error {
+	err := checkNodeIDs(a.InputData.Node)
+	if err != nil {
+		return err
+	}
+	err = checkElementsPresent(a)
+	if err != nil {
+		return err
+	}
+	err = checkNodeIDsAssociated(a.InputData.Node, a.InputData.Element1D)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 
