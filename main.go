@@ -37,7 +37,7 @@ func main() {
 		fmt.Println("Error: JSON decoding was unsuccessful")
 		return
 		}
-	lib.Solve(a)
+	lib.Solve(a) 
 
 	
 }
