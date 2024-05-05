@@ -34,9 +34,9 @@ func main() {
 		return
 	}
 	if a.InputData.DoF == 0 {
-        fmt.Println("Error: JSON decoding was unsuccessful")
-        return
-    }
+		fmt.Println("Error: JSON decoding was unsuccessful")
+		return
+		}
 	lib.Solve(a)
 
 	

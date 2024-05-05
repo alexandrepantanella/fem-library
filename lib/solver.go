@@ -45,7 +45,7 @@ func Solve(a Analysis){
 			a.CalcData.LocalStiffness[e.Id] = e.KL
 			a.CalcData.GlobalStiffness[e.Id] = e.KG
 			// Add local stiffness to global matrix
-			AssembleGlobalStiffnessMatrix(globalMatrix, e, a.InputData.DoF)
+			assembleGlobalStiffnessMatrix(globalMatrix, e, a.InputData.DoF)
 			a.CalcData.Global = globalMatrix
 		}
 	}
@@ -54,7 +54,7 @@ func Solve(a Analysis){
 	
 }
 
-func AssembleGlobalStiffnessMatrix(globalMatrix *mat.Dense, e *Element1D, DoF int) {
+func assembleGlobalStiffnessMatrix(globalMatrix *mat.Dense, e *Element1D, DoF int) {
 	if e.N1-1 >= 0 && e.N2-1 >= 0 {
 		for i := 0; i < DoF; i++ {
 			for j := 0; j < DoF; j++ {
